@@ -1,22 +1,33 @@
 import 'cross-fetch/polyfill'
 import {GaiaHubConfig, generateGaiaHubConfig, putFile, PutFileOptions} from 'micro-stacks/storage';
 
-//This module is for Trubit's specific use cases, with hardcode Trubit info:
-// 1. Get a Trubit app Gaia storage object.
-// 2. Create a Trubit app user Gaia file.
-// 3. Read a Trubit app user Gaia file.
-// 4. Update a Trubit app user Gaia file.
-// 5. List all Trubit app user Gaia files.
+// So, create like a 'connect to database' method. 
+// This will 'instantiate' a Gaia 'object' and all interactions is thru this object.
+// Use singleton pattern for the Gaia object.
+// Make sure to provide "disconnect from database" method, to reset user specific memory (specially auth token).
 
-// Return a (Promise) Gaia object
+//This module is for Trubit's specific use cases, having hardcoded Trubit info:
+// 1. Get a Trubit app Gaia storage object.
+// 2. App user file
+//     2.1 Create a Trubit app user Gaia file.
+//     2.2 Read a Trubit app user Gaia file.
+//     2.3 Update a Trubit app user Gaia file.
+//     2.4 List all Trubit app user Gaia files.
+// 3. Trubit app own file
+//     3.1 Create a Trubit app user Gaia file.
+//     3.2 Read a Trubit app user Gaia file.
+//     3.3 Update a Trubit app user Gaia file.
+//     3.4 List all Trubit app user Gaia files.
+
+// Return a (Promise) Gaia object, using a provided private key
 async function getStorage(privateKey: string): Promise<void> {
     const gaiaHubConfig: GaiaHubConfig = await generateGaiaHubConfig({
         privateKey,
         gaiaHubUrl: 'https://hub.blockstack.org'
     })
-    //console.log('yyy', gaiaHubConfig);
 }
 
+// Write a new Gaia file, with file name as parameter. 
 async function run() {
     const path = 'file2.json';
     const privateKey = '2e0f1b1b5b2dd054fcc176d5b8e82e0425cec26e555d108298a7e16a8853e7a9';
