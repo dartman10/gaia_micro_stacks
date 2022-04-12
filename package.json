@@ -1,0 +1,26 @@
+{
+  "name": "gaia_micro_stacks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-eager mycode.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dartman10/gaia_micro_stacks.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dartman10/gaia_micro_stacks/issues"
+  },
+  "homepage": "https://github.com/dartman10/gaia_micro_stacks#readme",
+  "dependencies": {
+    "cross-fetch": "^3.1.5",
+    "micro-stacks": "^0.3.0",
+    "ts-eager": "^2.0.2"
+  }
+}
