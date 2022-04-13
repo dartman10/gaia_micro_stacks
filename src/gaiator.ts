@@ -28,6 +28,22 @@ async function getStorage(privateKey: string): Promise<void> {
 }
 
 // Write a new Gaia file, with file name as parameter. 
+async function writeFile(filename: string): Promise<void> {
+    //storage = getStorageFromSingleton();
+    const privateKey = '2e0f1b1b5b2dd054fcc176d5b8e82e0425cec26e555d108298a7e16a8853e7a9';
+
+    const gaiaHubConfig: GaiaHubConfig = await generateGaiaHubConfig({
+        privateKey,
+        gaiaHubUrl: 'https://hub.blockstack.org'
+    })
+    const fileContent = JSON.stringify({'interest': 'skiing', 'age': 22, 'gender': 'male'});
+    const encryptOptions: PutFileOptions = {encrypt: false, gaiaHubConfig, privateKey};
+    const publicURL = await putFile(path, fileContent, encryptOptions);
+    console.log('xxx', publicURL);
+    console.log('yyy', gaiaHubConfig);
+}
+
+
 async function run() {
     const path = 'file2.json';
     const privateKey = '2e0f1b1b5b2dd054fcc176d5b8e82e0425cec26e555d108298a7e16a8853e7a9';
