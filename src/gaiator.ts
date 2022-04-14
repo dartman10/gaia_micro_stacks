@@ -4,6 +4,8 @@ import {
   generateGaiaHubConfig,
   putFile,
   PutFileOptions,
+  getFile,
+  GetFileOptions,
 } from 'micro-stacks/storage';
 
 // So, create like a 'connect to database' method.
@@ -24,21 +26,6 @@ import {
 //     3.3 Update a Trubit app user Gaia file.
 //     3.4 List all Trubit app user Gaia files.
 
-// Write a new Gaia file, with file name as parameter.
-async function writeFile(
-  filename: string,
-  gaiaHubConfig: GaiaHubConfig
-): Promise<void> {
-  const fileContent = JSON.stringify({
-    interest: 'skiing',
-    age: 22,
-    gender: 'male',
-  });
-  const encryptOptions: PutFileOptions = { encrypt: false, gaiaHubConfig };
-  const publicURL = await putFile(filename, fileContent, encryptOptions);
-  console.log('New file =', publicURL);
-}
-
 // Return a (Promise) Gaia object, using a provided private key
 async function getStorage(privateKey: string): Promise<GaiaHubConfig> {
   const gaiaHubConfig: GaiaHubConfig = await generateGaiaHubConfig({
@@ -48,14 +35,62 @@ async function getStorage(privateKey: string): Promise<GaiaHubConfig> {
   return gaiaHubConfig;
 }
 
-//where do i get the private of user? from session object?
-const privateKey =
-  '2e0f1b1b5b2dd054fcc176d5b8e82e0425cec26e555d108298a7e16a8853e7a9';
+// Write a new Gaia file
+async function writeFile(
+  filename: string,
+  fileContent: string,
+  gaiaHubConfig: GaiaHubConfig
+): Promise<string> {
+  const encryptOptions: PutFileOptions = { encrypt: false, gaiaHubConfig };
+  const publicURL = await putFile(filename, fileContent, encryptOptions);
+  //console.log('New file =', publicURL);
+  return publicURL;
+}
 
-// Main()
+/*
++-----------------------------------------------------------------------------+
+| readFile()                                                                  |
+|  - payload accepts a Storage instance and filename to read                  |
+|  - returns string file content                                              |
++-----------------------------------------------------------------------------+
+*/
+async function readFile(
+  filename: string,
+  gaiaHubConfig: GaiaHubConfig
+): Promise<string> {
+  const options = { decrypt: false, gaiaHubConfig };
+  const file = await getFile(filename, options);
+  //console.log('New file =', publicURL);
+  return JSON.parse(<string>file);
+}
+
+//--------------------------------
+//  Main() - this is the start
+//--------------------------------
+
+const privateKey =
+  '2e0f1b1b5b2dd054fcc176d5b8e82e0425cec26e555d108298a7e16a8853e7a9'; //where do i get the private key of user? from session object?
+const targetFileName = 'file3.json';
+const data = JSON.stringify({
+  interest: 'skiing',
+  age: 22,
+  gender: 'male',
+});
+
 getStorage(privateKey) // get a Gaia object
   .then((storage) => {
-    console.log('storage=', storage);
-    writeFile('file3.json', storage); // write a Gaia file
+    // then put file into Gaia
+    writeFile(targetFileName, data, storage).then((uriTargetFile) => {
+      console.log('\nHere is your new file =', uriTargetFile);
+    });
+  })
+  .catch(console.log);
+
+getStorage(privateKey) // get a Gaia object
+  .then((storage) => {
+    // then read a Gaia file
+    readFile(targetFileName, storage).then((content) => {
+      console.log('\nHere is your file content =', content);
+    });
   })
   .catch(console.log);
