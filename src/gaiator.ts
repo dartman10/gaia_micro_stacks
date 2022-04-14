@@ -5,7 +5,7 @@ import {
   putFile,
   PutFileOptions,
   getFile,
-  GetFileOptions,
+  deleteFile,
 } from 'micro-stacks/storage';
 
 // So, create like a 'connect to database' method.
@@ -35,7 +35,15 @@ async function getStorage(privateKey: string): Promise<GaiaHubConfig> {
   return gaiaHubConfig;
 }
 
-// Write a new Gaia file
+/*
++-----------------------------------------------------------------------------+
+| writeFile()                                                                 |
+|                                                                             |
+| TBDs :                                                                      |
+|   1. Overwrite or not overwrite option                                      |
+|   2. Encrypted or not encrypted option                                      |
++-----------------------------------------------------------------------------+
+*/
 async function writeFile(
   filename: string,
   fileContent: string,
@@ -50,7 +58,7 @@ async function writeFile(
 /*
 +-----------------------------------------------------------------------------+
 | readFile()                                                                  |
-|  - payload accepts a Storage instance and filename to read                  |
+|  - payload accepts a GaiaHubConfig object and filename to read              |
 |  - returns string file content                                              |
 +-----------------------------------------------------------------------------+
 */
@@ -64,6 +72,22 @@ async function readFile(
   return JSON.parse(<string>file);
 }
 
+/*
++-----------------------------------------------------------------------------+
+| deleteFile()                                                                |
+|  - payload accepts a GaiaHubConfig object and file to delete                |
+|  - returns true if successful delete                                        |
+|                                                                             |
+| To do : handle file does not exist, statusCode=404                          | 
++-----------------------------------------------------------------------------+  
+*/
+
+export async function deleteMyFile(
+  path: string,
+  options: { wasSigned: boolean; gaiaHubConfig: GaiaHubConfig }
+): Promise<string> {
+  const xxx = await deleteFile(path, options);
+}
 //--------------------------------
 //  Main() - this is the start
 //--------------------------------
@@ -77,7 +101,7 @@ const data = JSON.stringify({
   gender: 'male',
 });
 
-getStorage(privateKey) // get a Gaia object
+getStorage(privateKey) // get a Gaia object using private key
   .then((storage) => {
     // then put file into Gaia
     writeFile(targetFileName, data, storage).then((uriTargetFile) => {
@@ -86,11 +110,26 @@ getStorage(privateKey) // get a Gaia object
   })
   .catch(console.log);
 
-getStorage(privateKey) // get a Gaia object
+getStorage(privateKey) // get a Gaia object using private key
   .then((storage) => {
     // then read a Gaia file
     readFile(targetFileName, storage).then((content) => {
       console.log('\nHere is your file content =', content);
     });
+  })
+  .catch(console.log);
+
+/*
+  {
+    wasSigned?: boolean;
+    gaiaHubConfig: GaiaHubConfig;
+  }
+*/
+
+const yyy = true;
+getStorage(privateKey)
+  .then((storage) => {
+    const options = { yyy, storage };
+    deleteMyFile(targetFileName, options);
   })
   .catch(console.log);
