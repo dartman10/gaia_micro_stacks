@@ -84,8 +84,9 @@ async function readFile(
 
 export async function deleteMyFile(
   path: string,
-  options: { wasSigned: boolean; gaiaHubConfig: GaiaHubConfig }
+  gaiaHubConfig: GaiaHubConfig
 ): Promise<string> {
+  const options = { wasSigned: false, gaiaHubConfig }; //fails if wasSigned is not set according to actual file signed/unsigned state
   const xxx = await deleteFile(path, options);
 }
 //--------------------------------
@@ -119,17 +120,11 @@ getStorage(privateKey) // get a Gaia object using private key
   })
   .catch(console.log);
 
-/*
-  {
-    wasSigned?: boolean;
-    gaiaHubConfig: GaiaHubConfig;
-  }
-*/
-
-const yyy = true;
-getStorage(privateKey)
+//separate this deleteFile promise because it executes faster than putFile promise above
+getStorage(privateKey) // get a Gaia object using private key
   .then((storage) => {
-    const options = { yyy, storage };
-    deleteMyFile(targetFileName, options);
+    deleteMyFile(targetFileName, storage).then((content) => {
+      console.log('\ndeleted =', targetFileName);
+    });
   })
   .catch(console.log);
