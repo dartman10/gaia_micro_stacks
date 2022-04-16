@@ -1,3 +1,13 @@
+/*
+ A micro-stacks Gaia storage wrapper.
+ Why? To make wrapper functions for app specific needs.
+ micro-stacks provided necessary functions to work with Gaia, and
+ this library will pick-and-choose only the applicable parameters
+ specific to this application's use cases. Having customized wrapper
+ functions will make it more straightforward for the team to interact
+ with micro-stacks.
+*/
+
 import 'cross-fetch/polyfill';
 import {
   GaiaHubConfig,
