@@ -119,6 +119,12 @@ const data = JSON.stringify({
 getStorage(privateKey) // get a Gaia object using private key
   .then((storage) => {
     // then put file into Gaia
+    console.log('\nHere is your storage/GaiaHubConfig =', storage);
+  });
+
+getStorage(privateKey) // get a Gaia object using private key
+  .then((storage) => {
+    // then put file into Gaia
     writeFile(targetFileName, data, storage).then((uriTargetFile) => {
       console.log('\nHere is your new file =', uriTargetFile);
     });
@@ -142,3 +148,26 @@ getStorage(privateKey) // get a Gaia object using private key
     });
   })
   .catch(console.log);
+
+/*
+  export interface StacksSessionState {
+    addresses: {
+      testnet: string;
+      mainnet: string;
+    };
+    appPrivateKey: string;
+    associationToken: string;
+    hubUrl: string;
+    public_keys?: string[];
+    profile: Profile;
+    profile_url: string;
+    username: string | null;
+    version?: string;
+    decentralizedID: string;
+    identityAddress?: string;
+  }
+  */
+
+// get-gaia-address
+// https://github.com/fungible-systems/micro-stacks/blob/main/src/wallet-sdk/account/get-gaia-address.ts
+//
