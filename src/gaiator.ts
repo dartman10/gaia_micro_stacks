@@ -59,7 +59,7 @@ async function writeFile(
 +-----------------------------------------------------------------------------+
 | readFile()                                                                  |
 |  - payload accepts a GaiaHubConfig object and filename to read              |
-|  - returns string file content                                              |
+|  - returns a promise                                                        |
 +-----------------------------------------------------------------------------+
 */
 async function readFile(
@@ -76,12 +76,11 @@ async function readFile(
 +-----------------------------------------------------------------------------+
 | deleteFile()                                                                |
 |  - payload accepts a GaiaHubConfig object and file to delete                |
-|  - returns true if successful delete                                        |
+|  - returns a promise                                                        |
 |                                                                             |
-| To do : handle file does not exist, statusCode=404                          | 
-+-----------------------------------------------------------------------------+  
+| To do : handle file does not exist, statusCode=404                          |
++-----------------------------------------------------------------------------+
 */
-
 export async function deleteMyFile(
   path: string,
   gaiaHubConfig: GaiaHubConfig
@@ -89,6 +88,21 @@ export async function deleteMyFile(
   const options = { wasSigned: false, gaiaHubConfig }; //fails if wasSigned is not set according to actual file signed/unsigned state
   const xxx = await deleteFile(path, options);
 }
+
+/*
++-----------------------------------------------------------------------------+
+| listFiles()                                                                 |
+|  - payload accepts a GaiaHubConfig object                                   |
+|  - returns a promise                                                        |
++-----------------------------------------------------------------------------+
+*/
+async function listFiles(gaiaHubConfig: GaiaHubConfig): Promise<string> {
+  const options = { decrypt: false, gaiaHubConfig };
+  const file = await getFile(filename, options);
+  //console.log('New file =', publicURL);
+  return JSON.parse(<string>file);
+}
+
 //--------------------------------
 //  Main() - this is the start
 //--------------------------------
@@ -120,7 +134,7 @@ getStorage(privateKey) // get a Gaia object using private key
   })
   .catch(console.log);
 
-//separate this deleteFile promise because it executes faster than putFile promise above
+//warning: deleteFile promise executes quicker than putFile promise above. so this usually fails with no file found.
 getStorage(privateKey) // get a Gaia object using private key
   .then((storage) => {
     deleteMyFile(targetFileName, storage).then((content) => {
